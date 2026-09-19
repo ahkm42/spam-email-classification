@@ -9,7 +9,7 @@ The goal of this project is to classify emails as **spam** or **non-spam** based
 The project addresses two main questions:
 
 1. How do different classification algorithms perform on the spam classification task?
-2. What happens when the feature space is reduced by removing features that do not satisfy a correlation- and variance-based selection heuristic?
+2. How does reducing the feature space affect classification performance and computational cost?
 
 Each algorithm is evaluated twice:
 
@@ -40,18 +40,18 @@ The dataset is not included in this repository. It can be obtained from the UCI 
 
 ### 1. Exploratory Analysis
 
-The dataset is first examined to understand the distribution and characteristics of the input features.
+The dataset is examined to understand the distribution and characteristics of the input features.
 
 For each feature, the project calculates:
 
 * Pearson correlation with the target
 * Feature variance
 
-These statistics are visualized to investigate the relationship between the features and the spam label.
+These statistics are used to investigate the relationship between the features and the spam label.
 
 ### 2. Feature Selection
 
-A simple statistical heuristic is used to reduce the feature space.
+A statistical heuristic is used to reduce the feature space.
 
 A feature is retained based on:
 
@@ -73,7 +73,7 @@ The dataset is divided into:
 
 using a fixed random state of 42.
 
-Five-fold cross-validation is then used to select the main hyperparameter for each algorithm.
+Five-fold cross-validation is used to select the main hyperparameter for each algorithm.
 
 ### 4. Classification Algorithms
 
@@ -118,11 +118,9 @@ The following results were obtained using all 57 input features:
 | Linear SVM          |            62.413 |           0.0004 |        92.11% |
 | Logistic Regression |             0.212 |           0.0003 |        92.11% |
 
-![Results with All Features](figures/results_all_features.png)
-
 ### Selected Features
 
-The same algorithms were then evaluated using only the features retained by the feature-selection heuristic:
+The same algorithms were evaluated using only the features retained by the feature-selection heuristic:
 
 | Algorithm           | Training Time (s) | Testing Time (s) | Test Accuracy |
 | ------------------- | ----------------: | ---------------: | ------------: |
@@ -131,25 +129,23 @@ The same algorithms were then evaluated using only the features retained by the 
 | Linear SVM          |            27.718 |           ~0.000 |        89.86% |
 | Logistic Regression |             0.084 |           ~0.000 |        90.51% |
 
-![Results with Selected Features](figures/results_selected_features.png)
-
 ## Observations
 
-The experiments show that reducing the feature set resulted in a **small decrease in test accuracy for all four algorithms**.
+Reducing the feature set resulted in a **small decrease in test accuracy for all four algorithms**.
 
-At the same time, the reduced feature set improved computational efficiency for several algorithms, particularly KNN, Linear SVM, and Logistic Regression.
+The reduced feature set also improved measured computational efficiency for several algorithms, particularly KNN, Linear SVM, and Logistic Regression. However, this effect was not uniform; for example, the measured training time of the custom Decision Tree implementation increased from 9.801 seconds to 20.507 seconds.
 
-This illustrates a trade-off between **predictive performance and computational cost**. However, the effect was not uniformly beneficial for every algorithm; for example, the measured training time of the custom Decision Tree implementation increased when using the reduced feature set.
+Overall, the experiments illustrate a trade-off between **predictive performance and computational cost**.
 
-An important limitation is that the features removed by the selection procedure should not be interpreted as inherently useless. The selection method is based on individual correlation and variance statistics, which may not capture nonlinear relationships or interactions between features.
+An important limitation is that features excluded by the selection procedure should not be interpreted as inherently useless. The selection method is based on individual correlation and variance statistics, which may not capture nonlinear relationships or interactions between features.
 
 ## Key Results
 
 * KNN achieved the highest observed test accuracy in the all-feature experiment: **92.47%**.
 * Linear SVM and Logistic Regression both achieved **92.11%** using all features.
-* Removing features according to the selection heuristic reduced test accuracy for all four algorithms.
+* The feature-selection heuristic reduced test accuracy for all four algorithms.
 * The reduced feature set improved measured computational cost for several models.
-* Feature selection therefore introduced a trade-off between dimensionality, computational cost, and predictive performance.
+* The results demonstrate a trade-off between dimensionality, computational cost, and predictive performance.
 
 ## Repository Structure
 
@@ -200,4 +196,3 @@ Before running the notebook, update the dataset file path to point to your local
 * Seaborn
 * Scikit-learn
 * Jupyter Notebook
-
